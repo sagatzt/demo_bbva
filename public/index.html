@@ -136,7 +136,7 @@
                 method: 'GET',
             }).then(res=>res.json(res))
             .then(data=>{
-                let iframe=document.getElementById('innerFrame')
+                let iframe=parent.document.getElementById('innerFrame')
                 console.log(data)
                 console.log(iframe)
                 iframe.parent.location.href=`/view/sustainability-enterprise/thankyou-page`
