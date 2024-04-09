@@ -8,7 +8,7 @@ let panels=0
 app.use(cors())
 app.use(express.static('public'))
 
-app.get('/', (req, res) => {
+app.get('/panels', (req, res) => {
   res.json({response:`panels: ${panels}`})
 })
 
