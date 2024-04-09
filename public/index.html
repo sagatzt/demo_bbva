@@ -136,8 +136,10 @@
                 method: 'GET',
             }).then(res=>res.json(res))
             .then(data=>{
+                let iframe=document.getElementById('innerFrame')
                 console.log(data)
-                window.parent.location.href=`/view/sustainability-enterprise/thankyou-page`
+                console.log(iframe)
+                iframe.parent.location.href=`/view/sustainability-enterprise/thankyou-page`
 
                 //document.getElementById('thankyou').style.display="block"
             })
