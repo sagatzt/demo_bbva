@@ -137,11 +137,8 @@
                 method: 'GET',
             }).then(res=>res.json(res))
             .then(data=>{
-                let iframe=parent.document.getElementById('innerFrame')
                 console.log(data)
-                console.log(iframe)
-                iframe.parent.location.href=`/view/sustainability-enterprise/thankyou-page`
-
+                window.open('https://sites.google.com/view/sustainability-enterprise/thankyou-page',"_self")
                 //document.getElementById('thankyou').style.display="block"
             })
         }
