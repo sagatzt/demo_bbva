@@ -9,7 +9,11 @@
             margin-bottom:10px;
         }
         .progress{
-            width:300px
+            width:300px;
+            height: 25px;
+        }
+        .bg-info{
+            background-color:#dfdfe1!important;
         }
     </style>
     <title>Document</title>
@@ -19,8 +23,8 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                    <label class="form-check-label" for="flexRadioDefault1">
+                    <input class="form-check-input" type="radio" name="radio" id="radio0">
+                    <label class="form-check-label" for="radio0">
                       Durmiendo..
                     </label>
                 </div>
@@ -34,8 +38,8 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                    <label class="form-check-label" for="flexRadioDefault1">
+                    <input class="form-check-input" type="radio" name="radio" id="radio1" checked>
+                    <label class="form-check-label" for="radio1">
                       Sentado viendo la demo..
                     </label>
                 </div>
@@ -49,23 +53,23 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                    <label class="form-check-label" for="flexRadioDefault1">
+                    <input class="form-check-input" type="radio" name="radio" id="radio2">
+                    <label class="form-check-label" for="radio2">
                       Trabajando en la oficina..
                     </label>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="progress bg-info">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width:40%">126S</div>
+                    <div class="progress-bar bg-warning" role="progressbar" style="width:40%">126W</div>
                 </div>
             </div>
         </div>
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                    <label class="form-check-label" for="flexRadioDefault1">
+                    <input class="form-check-input" type="radio" name="radio " id="radio3">
+                    <label class="form-check-label" for="radio3">
                       Caminando hacia la cafetería..
                     </label>
                 </div>
@@ -79,8 +83,8 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                    <label class="form-check-label" for="flexRadioDefault1">
+                    <input class="form-check-input" type="radio" name="radio" id="radio4">
+                    <label class="form-check-label" for="radio4">
                       Corriendo a la siguiente reunión..
                     </label>
                 </div>
@@ -94,8 +98,8 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                    <label class="form-check-label" for="flexRadioDefault1">
+                    <input class="form-check-input" type="radio" name="radio" id="radio5">
+                    <label class="form-check-label" for="radio5">
                       Regresando a casa en bici..
                     </label>
                 </div>
@@ -110,7 +114,7 @@
     <div class="container" style="margin-top:20px">
         <div class="row">
             <div class="col-xs-12">
-                <button id="sendButton" class="btn btn-success">Enviar mi energía virtual!</button>
+                <button id="sendButton" class="btn btn-lg btn-success">Enviar mi energía virtual!</button>
             </div>
         </div>
     </div>
@@ -127,12 +131,14 @@
     </div>
     <script>
         document.getElementById('sendButton').onclick= (e)=> {
-            fetch("https://demo-bbva.onrender.com", {
+            fetch("https://demo-bbva.onrender.com/panels", {
                 mode: 'cors',
                 method: 'GET',
             }).then(res=>res.json(res))
             .then(data=>{
                 console.log(data)
+                window.top.location.href=`https://sites.google.com/view/sustainability-enterprise/thanyou-page`
+
                 //document.getElementById('thankyou').style.display="block"
             })
         }
