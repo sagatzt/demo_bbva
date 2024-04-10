@@ -1,10 +1,17 @@
 {
     "_type": "request",
-    "method": "GET",
+    "method": "POST",
     "body": {
-        "mimeType": "No Body"
+        "mimeType": "application/json",
+        "text": "{\n    \"client\":{\n        \"ip\":\"84.39.176.115\",\n        \"city\":\"Madrid\",\n        \"country\":\"España\",\n        \"isp\":\"XTRA TELECOM S.A.\",\n        \"latitude\":\"40.4167754\",\n        \"longitude\":\"-3.7037902\"\n    },\n    \"watts\":\"252\"\n}"
     },
     "sortOrder": 3,
     "url": "http://localhost/add",
-    "parameters": []
+    "parameters": [],
+    "headers": [
+        {
+            "name": "Content-Type",
+            "value": "application/json"
+        }
+    ]
 }

@@ -31,7 +31,7 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio" id="radio0">
+                    <input class="form-check-input" type="radio" name="radio" id="radio0" value="83">
                     <label class="form-check-label" for="radio0">
                       Durmiendo..
                     </label>
@@ -46,7 +46,7 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio" id="radio1" checked>
+                    <input class="form-check-input" type="radio" name="radio" id="radio1" value="104" checked>
                     <label class="form-check-label" for="radio1">
                       Sentado, viendo la demo..
                     </label>
@@ -54,14 +54,14 @@
             </div>
             <div class="col-md-6">
                 <div class="progress bg-info">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width:30%">104W</div>
+                    <div class="progress-bar bg-danger" role="progressbar" style="width:30%">104</div>
                 </div>
             </div>
         </div>
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio" id="radio2">
+                    <input class="form-check-input" type="radio" name="radio" id="radio2" value="126">
                     <label class="form-check-label" for="radio2">
                       Aplaudiendo efusivamente
                     </label>
@@ -76,7 +76,7 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio" id="radio3">
+                    <input class="form-check-input" type="radio" name="radio" id="radio3" value="167">
                     <label class="form-check-label" for="radio3">
                       De pie, felicitando a los compis
                     </label>
@@ -91,7 +91,7 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio" id="radio4">
+                    <input class="form-check-input" type="radio" name="radio" id="radio4" value="209">
                     <label class="form-check-label" for="radio4">
                       Caminando a la siguiente reunión..
                     </label>
@@ -106,7 +106,7 @@
         <div class="row row-padding">
             <div class="col-md-6">
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radio" id="radio5">
+                    <input class="form-check-input" type="radio" name="radio" id="radio5" value="252">
                     <label class="form-check-label" for="radio5">
                       ¡Corriendo, que llego tarde..!
                     </label>
@@ -128,15 +128,49 @@
             </div>
         </div>
     </div>
-     <script>
+    <script>
+        const request={}
+
         document.getElementById('sendButton').onclick= (e)=> {
+            request.watts = document.querySelector('input[name="radio"]:checked').value
             fetch("https://demo-bbva.onrender.com/add", {
                 mode: 'cors',
-                method: 'GET',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(request)
             }).then(res=>res.json(res))
             .then(data=>{
-                console.log(data)
                 location.href="/battery.html"
+            })
+        }
+
+
+
+        window.onload = () => {
+            const client={}
+            const getIP = async () => {
+                return await fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+            }
+            const getInfo = async (ip) => {
+                return await fetch('https://ipwhois.app/json/' + ip + '?lang=es')
+                .then(response => response.json())
+            }
+
+            getIP().then(response => {
+                client.ip = response.ip;
+                getInfo(response.ip).then(location => {
+                    if(location){
+                        client.city=`${location.city}`,
+                        client.country=`${location.country}`,
+                        client.isp=`${location.isp}`,
+                        client.latitude=`${location.latitude}`,
+                        client.longitude=`${location.longitude}`
+                    }
+                    request.client=client
+                })
             })
         }
     </script>

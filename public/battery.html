@@ -37,12 +37,15 @@
                         height: 100%;">
                     <div id="energy" style="
                         position: absolute;
-                        bottom: 0px;
+                        bottom: 10px;
                         width: 50%;
                         max-height: 75%;
                         height:0px;
                         background-color: rgb(98, 228, 38);
                         left: 25%;">
+                        <div style="position:absolute;bottom:2px;text-align: center;width:100%;text-align: center;">
+                            Total KW: <span id="total-watts"></span>
+                        </div>
                     </div>
                     <img src="/images/battery-svg.svg" style="
                         width:100%;
@@ -54,24 +57,31 @@
         </div>
         <div class="row margin-top">
             <div class="col-xs-12">
-                Panels: <span id="total-panels"></span>
+                
                 <button id="sendButton" class="btn btn-md btn-primary">¡Enviar mi energía virtual!</button>
             </div>
         </div>
     </div>
 
     <script>
-        const totalPanels=document.getElementById('total-panels')
+        //https://demo-bbva.onrender.com
+        const totalWatts=document.getElementById('total-watts')
         var socket = io.connect("https://demo-bbva.onrender.com", { forceNew: true });
         socket.on("messages", (data)=>{
-            totalPanels.textContent=data.panels
-            document.getElementById("energy").style.height=data.panels
+            const watts=parseInt(data.totalWatts)
+            totalWatts.textContent=watts
+            document.getElementById("energy").style.height=`${watts}px`
         })
 
         document.getElementById('sendButton').onclick= (e)=> {
+            const request={watts : 252}
             fetch("https://demo-bbva.onrender.com/add", {
                 mode: 'cors',
-                method: 'GET',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(request)
             }).then(res=>res.json(res))
             .then(data=>{
                 console.log(data)
