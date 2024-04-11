@@ -6,6 +6,7 @@ const port = 80
 const cors = require('cors')
 
 let totalWatts=0
+const maxPower=7400
 
 app.use(cors())
 app.use(express.static('public'))
@@ -32,9 +33,10 @@ app.get('/charge', (req, res) => {
 
 app.post('/add', (req, res) => {
   const response=req.body
-  if(totalWatts<25000) totalWatts+=parseInt(response.watts)
+  if(totalWatts<maxPower) totalWatts+=parseInt(response.watts)
   totalWatts=parseFloat(totalWatts.toFixed(2))
   response.totalWatts=totalWatts
+  response.maxPower=maxPower
   response.date=formatDate(new Date())
   io.sockets.emit("messages", response)
   res.json(response)
