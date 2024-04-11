@@ -81,7 +81,7 @@
         //https://demo-bbva.onrender.com
         let delay=0
         const totalWatts=document.getElementById('total-watts')
-        const socket = io.connect("http://localhost", { forceNew: true })
+        const socket = io.connect("https://demo-bbva.onrender.com", { forceNew: true })
         const energy=document.getElementById("energy")
         socket.on("messages", (data)=>{
             totalWatts.textContent=`${data.totalWatts} W`
@@ -102,7 +102,7 @@
                 },
                 "watts": "100"
             }
-            fetch("http://localhost/add", {
+            fetch("https://demo-bbva.onrender.com/add", {
                 mode: 'cors',
                 method: 'POST',
                 headers: {

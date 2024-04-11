@@ -121,10 +121,9 @@
     </div>
     <div class="container" style="margin-top:35px">
         <div class="row">
-            <div class="col-xs-12" style="text-align: right;">
-                <button id="sendButton" class="btn btn-md btn-primary">¡Enviar mi energía virtual!</button>
+            <div class="col-xs-12">
+                <button id="sendButton" class="sendButton btn btn-lg btn-primary">¡Enviar mi energía virtual!</button>
                 <img src="/images/goku.gif">
-            
             </div>
         </div>
     </div>
@@ -133,7 +132,7 @@
 
         document.getElementById('sendButton').onclick= (e)=> {
             request.watts = document.querySelector('input[name="radio"]:checked').value
-            fetch("http://localhost/add", {
+            fetch("https://demo-bbva.onrender.com/add", {
                 mode: 'cors',
                 method: 'POST',
                 headers: {
