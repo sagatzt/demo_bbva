@@ -32,7 +32,7 @@ app.get('/charge', (req, res) => {
 
 app.post('/add', (req, res) => {
   const response=req.body
-  if(totalWatts<12500) totalWatts+=parseInt(response.watts)
+  if(totalWatts<25000) totalWatts+=parseInt(response.watts)
   totalWatts=parseFloat(totalWatts.toFixed(2))
   response.totalWatts=totalWatts
   response.date=formatDate(new Date())
