@@ -68,7 +68,7 @@
                 </div>
             </div>
             <div class="col-xs-12 margin-top">
-                <button id="sendButton" class="btn btn-md btn-primary">¡Enviar mi energía virtual!</button>
+                <button id="sendButton" class="btn btn-primary">¡Quiero donar 100W más de energía!</button>
             </div>
         </div>
         <div class="row margin-top">
@@ -80,8 +80,9 @@
 
     <script>
         //https://demo-bbva.onrender.com
+        const delay=0
         const totalWatts=document.getElementById('total-watts')
-        const socket = io.connect("http://localhost", { forceNew: true })
+        const socket = io.connect("https://demo-bbva.onrender.com", { forceNew: true })
         const energy=document.getElementById("energy")
         socket.on("messages", (data)=>{
             totalWatts.textContent=`${data.totalWatts} W`
@@ -89,9 +90,6 @@
         })
 
         const lista=document.querySelector(".live-list")
-        document.getElementById('sendButton').addEventListener("click", function (e) {
-            party.confetti(e)
-        })
         document.getElementById('sendButton').onclick= (e)=> {
             const request={
                 "client": {
@@ -104,7 +102,7 @@
                 },
                 "watts": "252"
             }
-            fetch("http://localhost/add", {
+            fetch("https://demo-bbva.onrender.com/add", {
                 mode: 'cors',
                 method: 'POST',
                 headers: {
@@ -119,11 +117,18 @@
                 newItem.style.color=getRandomColor()
                 newItem.innerHTML=`<b>${data.date}:</b> IP: ${data.client.ip} - ${data.client.city} (${data.client.country}) ha donado ${data.watts} watts! Gracias!!`
                 lista.insertBefore(newItem, lista.firstChild)
-
-
             })
         }
 
+        //CONFETTI EFFECT:
+        document.getElementById('sendButton').addEventListener("click", function (e) {
+            delay++
+            if(delay==5) {
+                party.confetti(e)
+                delay=0
+            }
+        })
+        
 
         function getRandomColor(){
             let simbolos, color
