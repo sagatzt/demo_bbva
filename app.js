@@ -21,6 +21,7 @@ const io = require("socket.io")(server)
 io.on('connection', (socket) => {
   console.log('a user connected')
   socket.emit('messages', {totalWatts:totalWatts})  
+
 })
 
 
@@ -31,10 +32,11 @@ app.get('/charge', (req, res) => {
 
 app.post('/add', (req, res) => {
   const response=req.body
-  totalWatts+=(parseInt(response.watts)/100)
+  if(totalWatts<12500) totalWatts+=parseInt(response.watts)
+  totalWatts=parseFloat(totalWatts.toFixed(2))
   response.totalWatts=totalWatts
-  
-  io.sockets.emit("messages", {totalWatts:totalWatts})
+  response.date=formatDate(new Date())
+  io.sockets.emit("messages", response)
   res.json(response)
 })
 
@@ -46,4 +48,26 @@ app.get('/reset', (req, res) => {
 server.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+
+
+setInterval(()=>{
+  if(totalWatts>=100) totalWatts-=100
+  io.sockets.emit('messages', {
+    totalWatts:parseFloat(totalWatts.toFixed(2))
+  }) 
+},2000)
+
+function formatDate(date) {
+  let hours = date.getHours()
+  let minutes = date.getMinutes()
+  //var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12
+  hours = hours ? hours : 12 // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0' + minutes : minutes
+  var strTime = hours + ':' + minutes
+  return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + strTime
+}
+
+
 

@@ -6,10 +6,23 @@
     <meta http-equiv=”Content-Security-Policy” content=”default-src *.google.com; img-src *”>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
     <link rel="icon" type="image/x-icon" href="favicon.png">
+    <link rel="stylesheet" href="confetti.css">
     <style>
         .margin-top{
             margin-top:20px;
+        }
+        .live-list{
+            height:200px;
+            font-size: xx-small;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+        .btn-primary{
+            background-color:#028484!important;
+            border-color:#028484;
+            border-radius: 4px;
         }
     </style>
     <title>Document</title>
@@ -37,14 +50,14 @@
                         height: 100%;">
                     <div id="energy" style="
                         position: absolute;
-                        bottom: 0px;
+                        bottom: 5px;
                         width: 50%;
                         max-height: 75%;
                         height:0px;
                         background-color: rgb(98, 228, 38);
                         left: 25%;">
                         <div style="position:absolute;bottom:2px;text-align: center;width:100%;text-align: center;font-size: x-small">
-                            Total KW: <span id="total-watts"></span>
+                            <span id="total-watts"></span>
                         </div>
                     </div>
                     <img src="/images/battery-svg.svg" style="
@@ -54,11 +67,13 @@
                     </div>
                 </div>
             </div>
+            <div class="col-xs-12 margin-top">
+                <button id="sendButton" class="btn btn-md btn-primary">¡Enviar mi energía virtual!</button>
+            </div>
         </div>
         <div class="row margin-top">
-            <div class="col-xs-12">
+            <div class="col-xs-12 live-list">
                 
-                <button id="sendButton" class="btn btn-md btn-primary">¡Enviar mi energía virtual!</button>
             </div>
         </div>
     </div>
@@ -66,16 +81,30 @@
     <script>
         //https://demo-bbva.onrender.com
         const totalWatts=document.getElementById('total-watts')
-        var socket = io.connect("https://demo-bbva.onrender.com", { forceNew: true });
+        const socket = io.connect("http://localhost", { forceNew: true })
+        const energy=document.getElementById("energy")
         socket.on("messages", (data)=>{
-            const watts=parseInt(data.totalWatts)
-            totalWatts.textContent=watts
-            document.getElementById("energy").style.height=`${watts}px`
+            totalWatts.textContent=`${data.totalWatts} W`
+            energy.style.height=`${parseFloat((data.totalWatts/100).toFixed(2))}px`
         })
 
+        const lista=document.querySelector(".live-list")
+        document.getElementById('sendButton').addEventListener("click", function (e) {
+            party.confetti(e)
+        })
         document.getElementById('sendButton').onclick= (e)=> {
-            const request={watts : 252}
-            fetch("https://demo-bbva.onrender.com/add", {
+            const request={
+                "client": {
+                    "ip": "84.39.176.115",
+                    "city": "Madrid",
+                    "country": "España",
+                    "isp": "XTRA TELECOM S.A.",
+                    "latitude": "40.4167754",
+                    "longitude": "-3.7037902"
+                },
+                "watts": "252"
+            }
+            fetch("http://localhost/add", {
                 mode: 'cors',
                 method: 'POST',
                 headers: {
@@ -85,9 +114,25 @@
             }).then(res=>res.json(res))
             .then(data=>{
                 console.log(data)
+                const newItem=document.createElement('span')
+                newItem.style.display='block'
+                newItem.style.color=getRandomColor()
+                newItem.innerHTML=`<b>${data.date}:</b> IP: ${data.client.ip} - ${data.client.city} (${data.client.country}) ha donado ${data.watts} watts! Gracias!!`
+                lista.insertBefore(newItem, lista.firstChild)
+
+
             })
         }
 
+
+        function getRandomColor(){
+            let simbolos, color
+            simbolos = "0123456789ABCDEF"
+            color = "#"
+            for(var i = 0; i < 6; i++)
+                color = color + simbolos[Math.floor(Math.random() * 16)]
+            return color
+        }
     </script>
 </body>
 </html>
