@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
     <link rel="icon" type="image/x-icon" href="favicon.png">
-    <link rel="stylesheet" href="confetti.css">
     <style>
         .margin-top{
             margin-top:20px;
@@ -80,9 +79,9 @@
 
     <script>
         //https://demo-bbva.onrender.com
-        const delay=0
+        let delay=0
         const totalWatts=document.getElementById('total-watts')
-        const socket = io.connect("https://demo-bbva.onrender.com", { forceNew: true })
+        const socket = io.connect("http://localhost", { forceNew: true })
         const energy=document.getElementById("energy")
         socket.on("messages", (data)=>{
             totalWatts.textContent=`${data.totalWatts} W`
@@ -102,7 +101,7 @@
                 },
                 "watts": "252"
             }
-            fetch("https://demo-bbva.onrender.com/add", {
+            fetch("http://localhost/add", {
                 mode: 'cors',
                 method: 'POST',
                 headers: {

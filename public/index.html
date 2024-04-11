@@ -133,7 +133,7 @@
 
         document.getElementById('sendButton').onclick= (e)=> {
             request.watts = document.querySelector('input[name="radio"]:checked').value
-            fetch("https://demo-bbva.onrender.com/add", {
+            fetch("http://localhost/add", {
                 mode: 'cors',
                 method: 'POST',
                 headers: {
