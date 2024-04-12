@@ -112,7 +112,7 @@
         const energy=document.getElementById("energy")
 
 
-        socket.on("connection", (data)=>{
+        socket.on("newPlayer", (data)=>{
             totalWatts.textContent=`${data.totalWatts} W`
             const result=data.totalWatts*100/data.maxPower
             energy.style.height=`${parseFloat((data.totalWatts/100).toFixed(2))}%`
