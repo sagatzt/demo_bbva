@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
   usersConnected++
   let randomName=getRandomName()
   console.log(`a new user connected (${randomName}). Total users: ${usersConnected}`)
-  socket.emit('newPlayer', {
+  io.socket.emit('connection', {
     totalWatts:totalWatts,
     usersConnected: usersConnected,
   })  

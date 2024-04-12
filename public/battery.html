@@ -111,8 +111,7 @@
         const socket = io.connect("https://demo-bbva.onrender.com", { forceNew: true })
         const energy=document.getElementById("energy")
 
-
-        socket.on("newPlayer", (data)=>{
+        socket.on("connection", (data)=>{
             totalWatts.textContent=`${data.totalWatts} W`
             const result=data.totalWatts*100/data.maxPower
             energy.style.height=`${parseFloat((data.totalWatts/100).toFixed(2))}%`
