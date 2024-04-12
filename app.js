@@ -19,15 +19,15 @@ app.use(bodyParser.json())
 const server = require("http").Server(app)
 const io = require("socket.io")(server)
 
+function newPlayer(usersConnected){
+  io.socket.emit('new-player',usersConnected)
+}
 
 io.on('connection', (socket) => {
   usersConnected++
-  let randomName=getRandomName()
-  console.log(`a new user connected (${randomName}). Total users: ${usersConnected}`)
-  io.socket.emit('connection', {
-    totalWatts:totalWatts,
-    usersConnected: usersConnected,
-  })  
+  console.log(`a new user connected. Total users: ${usersConnected}`)
+  socket.emit('connection',totalWatts)
+  newPlayer(usersConnected)  
 })
 
 
