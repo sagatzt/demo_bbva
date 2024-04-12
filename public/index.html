@@ -126,7 +126,7 @@
     <div class="container" style="margin-top:35px">
         <div class="row">
             <div class="col-xs-12">
-                <button id="sendButton" class="sendButton btn btn-lg btn-primary">¡Enviar mi energía virtual!</button>
+                <button id="sendButton" class="sendButton btn btn-md btn-primary">¡Enviar mi energía virtual!</button>
                 <img src="/images/goku.gif">
             </div>
         </div>
@@ -145,6 +145,7 @@
                 body: JSON.stringify(request)
             }).then(res=>res.json(res))
             .then(data=>{
+                sessionStorage.setItem('bbva-demo',JSON.stringify(data))
                 location.href="/battery.html"
             })
         }

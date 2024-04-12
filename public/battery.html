@@ -14,14 +14,35 @@
         }
         .live-list{
             height:300px;
-            font-size: xx-small;
+            font-size:x-small;
             overflow-x: hidden;
             overflow-y: scroll;
+            color:#072146;
+        }
+        .users-counter{
+            position: absolute;
+            top: -10px;
+            left: 120px;
+            font-size: 1.2em;
+            display: flex;
+        }
+        .users-counter>span{
+            display: block;
         }
         .btn-primary{
             background-color:#028484!important;
             border-color:#028484;
             border-radius: 4px;
+        }
+        @media only screen and (min-width: 500px) {
+            .live-list, #total-watts{
+                font-size:large;
+                height: 800px;
+            }
+            .users-counter{
+                left:250px;
+                font-size: 3em;
+            }
         }
     </style>
     <title>Document</title>
@@ -33,15 +54,18 @@
                 <div class="alert alert-primary" role="alert">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="16" fill="currentColor" class="bi bi-hand-thumbs-up-fill" viewBox="0 0 16 16">
                         <path d="M6.956 1.745C7.021.81 7.908.087 8.864.325l.261.066c.463.116.874.456 1.012.965.22.816.533 2.511.062 4.51a10 10 0 0 1 .443-.051c.713-.065 1.669-.072 2.516.21.518.173.994.681 1.2 1.273.184.532.16 1.162-.234 1.733q.086.18.138.363c.077.27.113.567.113.856s-.036.586-.113.856c-.039.135-.09.273-.16.404.169.387.107.819-.003 1.148a3.2 3.2 0 0 1-.488.901c.054.152.076.312.076.465 0 .305-.089.625-.253.912C13.1 15.522 12.437 16 11.5 16H8c-.605 0-1.07-.081-1.466-.218a4.8 4.8 0 0 1-.97-.484l-.048-.03c-.504-.307-.999-.609-2.068-.722C2.682 14.464 2 13.846 2 13V9c0-.85.685-1.432 1.357-1.615.849-.232 1.574-.787 2.132-1.41.56-.627.914-1.28 1.039-1.639.199-.575.356-1.539.428-2.59z"/>
-                    </svg> &nbsp;
-                    ¡¡Muchas gracias por enviarnos tu energía sostenible!!
+                    </svg> &nbsp;¡¡Muchas gracias por enviarnos tu energía sostenible, <span id="random-name" style="font-weight: bold"></span>!!. Para conservar tu anonimato, hemos generado un nombre aleatorio.
                 </div>
             </div>
         </div>
     </div>
-    <div class="container margin-top" style="max-width: 600px;">
+    <div class="container margin-top" style="max-width: 800px;">
         <div class="row">
             <div class="col-xs-12" style="position:relative">
+                <div class="users-counter">
+                    <b>Jugadores:&nbsp;</b>
+                    <span id="users-counter">0</span>
+                </div>
                 <img src="/images/bbva_building2.jpg" style="width:100%">
                 <div id="full-battery" style="
                         position: absolute;
@@ -68,10 +92,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6 col-xs-12 margin-top">
+            <div class="col-xs-12 margin-top">
                 <button id="sendButton" class="btn btn-primary">¡Quiero donar 100W más de energía!</button>
             </div>
-            <div class="col-sm-6 col-xs-12 live-list margin-top">
+            <div class="col-xs-12 live-list margin-top">
                 
             </div>
         </div>
@@ -80,43 +104,41 @@
     <script>
         //https://demo-bbva.onrender.com
         let delay=0
+        let players=0
+        let bbvaDemo=JSON.parse(sessionStorage.getItem('bbva-demo'))
+        document.getElementById('random-name').textContent=bbvaDemo.randomName
         const totalWatts=document.getElementById('total-watts')
         const socket = io.connect("https://demo-bbva.onrender.com", { forceNew: true })
         const energy=document.getElementById("energy")
-        socket.on("messages", (data)=>{
+
+
+        socket.on("connection", (data)=>{
+            totalWatts.textContent=`${data.totalWatts} W`
+            const result=data.totalWatts*100/data.maxPower
+            energy.style.height=`${parseFloat((data.totalWatts/100).toFixed(2))}%`
+            document.getElementById('users-counter').textContent=data.usersConnected
+        })
+        socket.on("stats", (data)=>{
             totalWatts.textContent=`${data.totalWatts} W`
             const result=data.totalWatts*100/data.maxPower
             energy.style.height=`${parseFloat((data.totalWatts/100).toFixed(2))}%`
         })
 
+        socket.on("messages", (data)=>{
+            addNewItemToList(data)
+        })
+
         const lista=document.querySelector(".live-list")
         document.getElementById('sendButton').onclick= (e)=> {
-            const request={
-                "client": {
-                    "ip": "84.39.176.115",
-                    "city": "Madrid",
-                    "country": "España",
-                    "isp": "XTRA TELECOM S.A.",
-                    "latitude": "40.4167754",
-                    "longitude": "-3.7037902"
-                },
-                "watts": "100"
-            }
+            if(!sessionStorage.getItem('bbva-demo')) location.href='/index.html'
+            bbvaDemo['watts']=100
             fetch("https://demo-bbva.onrender.com/add", {
                 mode: 'cors',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(request)
-            }).then(res=>res.json(res))
-            .then(data=>{
-                console.log(data)
-                const newItem=document.createElement('span')
-                newItem.style.display='block'
-                newItem.style.color=getRandomColor()
-                newItem.innerHTML=`<b>${data.date}:</b> IP: ${data.client.ip} - ${data.client.city} (${data.client.country}) ha donado ${data.watts} watts! Gracias!!`
-                lista.insertBefore(newItem, lista.firstChild)
+                body: JSON.stringify(bbvaDemo)
             })
         }
 
@@ -129,6 +151,14 @@
             }
         })
         
+
+        function addNewItemToList(data){
+            const newItem=document.createElement('span')
+            newItem.style.display='block'
+            //newItem.style.color=getRandomColor()
+            newItem.innerHTML=`${data.date} - <b>${data.randomName}</b> <span style="color:#48b0d0">${data.client.city} (${data.client.country}) ha donado ${data.watts} watts! Gracias!!</span>`
+            lista.insertBefore(newItem, lista.firstChild)
+        }
 
         function getRandomColor(){
             let simbolos, color
