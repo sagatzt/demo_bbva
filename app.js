@@ -20,13 +20,16 @@ const server = require("http").Server(app)
 const io = require("socket.io")(server)
 
 function newPlayer(usersConnected){
-  io.sockets.emit('new-player',usersConnected)
+  io.sockets.emit('new-player',{usersConnected:usersConnected})
 }
 
 io.on('connection', (socket) => {
   usersConnected++
   console.log(`a new user connected. Total users: ${usersConnected}`)
-  socket.emit('connection',totalWatts)
+  socket.emit('connection',{
+    totalWatts:totalWatts,
+    maxPower:maxPower
+  })
   newPlayer(usersConnected)  
 })
 
